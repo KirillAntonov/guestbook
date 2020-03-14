@@ -41,14 +41,13 @@ public class RegistrationFragment extends Fragment {
     public static Uri selectedImageUri;
 
     public RegistrationFragment() {
-        // Required empty public constructor
+
     }
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_registration, container, false);
     }
 
@@ -77,25 +76,9 @@ public class RegistrationFragment extends Fragment {
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                IdentificationActivity.networkController.registerUser(userNameText.getText().toString(), userEmailText.getText().toString(), userPasswordText.getText().toString(), new File(getRealPathFromURI(getContext(), selectedImageUri)));
+                IdentificationActivity.networkController.registerUser(userNameText.getText().toString(), userEmailText.getText().toString(), userPasswordText.getText().toString(), selectedImageUri);
             }
         });
-    }
-
-    public static String getRealPathFromURI(Context context, Uri contentURI) {
-        String result = null;
-        Cursor cursor = context.getContentResolver().query(contentURI, null, null, null, null);
-        if (cursor == null) {
-            result = contentURI.getPath();
-        } else {
-            cursor.moveToFirst();
-            int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
-            if(idx >= 0) {
-                result = cursor.getString(idx);
-            }
-            cursor.close();
-        }
-        return result;
     }
 
     @Override

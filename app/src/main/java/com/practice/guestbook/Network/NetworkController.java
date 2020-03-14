@@ -4,22 +4,15 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
+import android.net.Uri;
 import android.widget.Toast;
 
-import com.practice.guestbook.Identification.RegistrationFragment;
 import com.practice.guestbook.IdentificationActivity;
 import com.practice.guestbook.MainActivity;
+import com.practice.guestbook.PathUtils;
 import com.practice.guestbook.User;
 
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -34,32 +27,32 @@ import static com.practice.guestbook.Network.ClientApi.BASE_URL;
 public class NetworkController {
 
     ProgressDialog pDialog;
-    JSONParser jParser;
     Context context;
 
     public NetworkController(Context context) {
         this.context = context;
         pDialog = new ProgressDialog(context);
-        jParser = new JSONParser();
     }
 
     public void loginUser(String email, String password) {
         login(email, password);
     }
 
-    public void registerUser(String name, String email, String password, File avatar) {
-        register(name, email, password, avatar);
+    public void registerUser(String name, String email, String password, Uri selectedUri) {
+        register(name, email, password, selectedUri);
     }
 
-    private void register(String name, String email, String password, File avatar) {
+    private void register(String name, String email, String password, Uri selectedUri) {
         pDialog.setMessage("Registration ...");
         pDialog.show();
+
+        File file = new File(PathUtils.getPath(context, selectedUri));
 
         RequestBody nameRequest = RequestBody.create(MediaType.parse("text/plain"), name);
         RequestBody emailRequest = RequestBody.create(MediaType.parse("text/plain"), email);
         RequestBody passwordRequest = RequestBody.create(MediaType.parse("text/plain"), password);
-        RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), RegistrationFragment.getRealPathFromURI(context, RegistrationFragment.selectedImageUri));
-        MultipartBody.Part multipartBody = MultipartBody.Part.createFormData("avatar", avatar.getName(), requestFile);
+
+        MultipartBody.Part multipartBody = MultipartBody.Part.createFormData("avatar", file.getName(), RequestBody.create(MediaType.parse("image/*"), file));
 
         ServerApi serverApi = ClientApi.getApi();
         Call<User> call = serverApi.register(nameRequest, emailRequest, passwordRequest, multipartBody);
@@ -118,7 +111,7 @@ public class NetworkController {
                     editor.putInt("id", user.getId());
                     editor.putString("name", user.getName());
                     editor.putString("email", user.getEmail());
-                    editor.putString("avatar", user.getAvatar());
+                    editor.putString("avatar", BASE_URL + user.getAvatar());
                     editor.putInt("is_admin", user.getIs_admin());
                     editor.putString("api_token", user.getApi_token());
                     editor.putString("created_at", user.getCreated_at());

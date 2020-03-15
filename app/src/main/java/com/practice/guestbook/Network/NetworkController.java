@@ -7,6 +7,8 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.widget.Toast;
 
+import androidx.fragment.app.FragmentTransaction;
+
 import com.practice.guestbook.IdentificationActivity;
 import com.practice.guestbook.MainActivity;
 import com.practice.guestbook.PathUtils;
@@ -136,6 +138,56 @@ public class NetworkController {
             }
         });
     }
+
+    public void addNewComment(final Context context, String title, String message) {
+        pDialog = new ProgressDialog(context);
+        pDialog.setMessage("Adding new comment ...");
+        pDialog.show();
+
+        ServerApi serverApi = ClientApi.getApi();
+        serverApi.addNewComment(title, message, user.getApi_token()).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                pDialog.dismiss();
+                Toast.makeText(context, "Comment is added.", Toast.LENGTH_LONG).show();
+
+                Intent intent = new Intent(context, MainActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                context.startActivity(intent);
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+
+            }
+        });
+    }
+
+    public void deleteComment(final Context context, final long comment_id) {
+        pDialog = new ProgressDialog(context);
+        pDialog.setMessage("Deleting comment ...");
+        pDialog.show();
+
+        ServerApi serverApi = ClientApi.getApi();
+        serverApi.deleteComment(comment_id, user.getApi_token()).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                pDialog.dismiss();
+
+                Intent intent = new Intent(context, MainActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                context.startActivity(intent);
+
+                Toast.makeText(context, "Comment "+ comment_id +" is deleted.", Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+
+            }
+        });
+    }
+
 
 }
 

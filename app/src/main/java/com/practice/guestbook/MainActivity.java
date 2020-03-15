@@ -2,6 +2,8 @@ package com.practice.guestbook;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.paging.PagedList;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -12,31 +14,20 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.RelativeLayout;
 
 public class MainActivity extends AppCompatActivity {
-
-    private RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        recyclerView = findViewById(R.id.recyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setHasFixedSize(true);
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.mainRelative, new FeedCommentsFragment()).commit();
 
-        DataViewModel dataViewModel = ViewModelProviders.of(this).get(DataViewModel.class);
-        final CommentAdapter adapter = new CommentAdapter(this);
-
-        dataViewModel.dataPagedList.observe(this, new Observer<PagedList<Data>>() {
-            @Override
-            public void onChanged(PagedList<Data> data) {
-                adapter.submitList(data);
-            }
-        });
-
-        recyclerView.setAdapter(adapter);
     }
 
     @Override

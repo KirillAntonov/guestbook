@@ -6,12 +6,14 @@ import com.practice.guestbook.User;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
+import retrofit2.http.DELETE;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface ServerApi {
@@ -36,5 +38,20 @@ public interface ServerApi {
     Call<CommentApiResponse> getListOfComments(
             @Query("api_token") String api_token,
             @Query("page") int page
+    );
+
+    @FormUrlEncoded
+    @POST("api/v1/comment")
+    Call<Void> addNewComment (
+            @Field("title") String title,
+            @Field("message") String message,
+            @Field("api_token") String api_token
+    );
+
+
+    @DELETE("api/v1/comment/{comment}")
+    Call<Void> deleteComment(
+            @Path("comment") long comment_id,
+            @Query("api_token") String api_token
     );
 }

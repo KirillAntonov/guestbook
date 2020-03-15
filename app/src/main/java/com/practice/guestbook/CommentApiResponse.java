@@ -1,5 +1,7 @@
 package com.practice.guestbook;
 
+import androidx.annotation.Nullable;
+
 import java.util.List;
 
 public class CommentApiResponse {
@@ -17,7 +19,7 @@ public class CommentApiResponse {
 
 class Data {
     long comment_id;
-    User user;
+    User user;;
     String title;
     String message;
     String created_at;

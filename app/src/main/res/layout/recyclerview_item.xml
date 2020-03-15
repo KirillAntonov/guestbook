@@ -33,7 +33,7 @@
                     android:id="@+id/titleTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Заголовок"
+                    android:text="Title"
                     android:textSize="25dp"
                     android:textStyle="bold" />
 
@@ -41,7 +41,7 @@
                     android:id="@+id/messageTextView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Сообщение"
+                    android:text="Message"
                     android:textSize="20dp" />
 
                 <TextView
@@ -49,10 +49,17 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="end"
-                    android:text="Имя пользователя" />
+                    android:text="User name" />
+
             </LinearLayout>
 
         </LinearLayout>
+
+        <Button
+            android:id="@+id/deleteCommentButton"
+            android:layout_width="wrap_content"
+            android:layout_height="34dp"
+            android:text="Delete comment" />
 
         <View
             android:layout_width="match_parent"

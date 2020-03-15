@@ -6,6 +6,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,8 +37,8 @@ public class CommentAdapter extends PagedListAdapter<Data, CommentAdapter.DataVi
     }
 
     @Override
-    public void onBindViewHolder(@NonNull DataViewHolder holder, int position) {
-        Data data = getItem(position);
+    public void onBindViewHolder(@NonNull final DataViewHolder holder, int position) {
+        final Data data = getItem(position);
 
         if (data != null) {
             Glide.with(context)
@@ -47,6 +48,20 @@ public class CommentAdapter extends PagedListAdapter<Data, CommentAdapter.DataVi
             holder.titleTextView.setText(data.title);
             holder.messageTextView.setText(data.message);
             holder.userNameTextView.setText(data.user.getName());
+
+            if (data.user.getId() != IdentificationActivity.user.getId()) {
+                holder.deleteComment.setVisibility(View.INVISIBLE);
+            } else {
+                holder.deleteComment.setVisibility(View.VISIBLE);
+            }
+
+            holder.deleteComment.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    IdentificationActivity.networkController.deleteComment(context, data.comment_id);
+                }
+            });
+
         } else {
             Toast.makeText(context, "item is null", Toast.LENGTH_LONG).show();
         }
@@ -72,6 +87,7 @@ public class CommentAdapter extends PagedListAdapter<Data, CommentAdapter.DataVi
         TextView titleTextView;
         TextView messageTextView;
         TextView userNameTextView;
+        Button deleteComment;
 
         public DataViewHolder(View itemView) {
             super(itemView);
@@ -80,7 +96,7 @@ public class CommentAdapter extends PagedListAdapter<Data, CommentAdapter.DataVi
             titleTextView = itemView.findViewById(R.id.titleTextView);
             messageTextView = itemView.findViewById(R.id.messageTextView);
             userNameTextView = itemView.findViewById(R.id.userNameTextView);
-
+            deleteComment = itemView.findViewById(R.id.deleteCommentButton);
         }
     }
 }

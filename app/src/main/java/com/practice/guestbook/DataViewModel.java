@@ -8,7 +8,7 @@ import androidx.paging.PagedList;
 
 public class DataViewModel extends ViewModel {
 
-    LiveData<PagedList<Data>> dataPagedList;
+    LiveData dataPagedList;
     LiveData<PageKeyedDataSource<Integer, Data>> liveDataSource;
 
     public DataViewModel() {
@@ -21,6 +21,15 @@ public class DataViewModel extends ViewModel {
                 .setPageSize(DataDataSource.PAGE_SIZE)
                 .build();
 
-        dataPagedList = (new LivePagedListBuilder(dataDataSourceFactory, config).build());
+        dataPagedList = (new LivePagedListBuilder(dataDataSourceFactory, config).setBoundaryCallback(
+                new PagedList.BoundaryCallback() {
+                    @Override
+                    public void onZeroItemsLoaded() {
+                        super.onZeroItemsLoaded();
+                    }
+                }
+        ).build());
     }
+
+
 }

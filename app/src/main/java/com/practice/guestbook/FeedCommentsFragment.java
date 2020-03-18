@@ -61,6 +61,7 @@ public class FeedCommentsFragment extends Fragment {
             }
         });
 
+
         recyclerView.setAdapter(adapter);
 
         addCommentButton.setOnClickListener(new View.OnClickListener() {

@@ -90,7 +90,7 @@ public class NetworkController {
 
             @Override
             public void onFailure(Call<User> call, Throwable t) {
-
+                pDialog.dismiss();
             }
         });
     }

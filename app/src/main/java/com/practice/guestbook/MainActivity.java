@@ -41,11 +41,13 @@ public class MainActivity extends AppCompatActivity {
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.mainRelative, new FeedCommentsFragment()).commit();
 
-        PusherOptions options = new PusherOptions();
-        options.setHost("http://pusher.cpl.by");
-        options.setWsPort(6020);
-        options.setEncrypted(false);
-        options.buildUrl("key");
+//        PusherOptions options = new PusherOptions();
+//        options.setHost("http://pusher.cpl.by");
+//        options.setWsPort(6020);
+//        options.setEncrypted(false);
+//        options.buildUrl("key");
+
+        CustomPusherOptions options = new CustomPusherOptions(true);
 
         String token = "Bearer " + IdentificationActivity.user.getApi_token();
         HashMap<String, String> map = new HashMap<>();

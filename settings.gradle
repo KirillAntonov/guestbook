@@ -1,2 +1,2 @@
-rootProject.name='GuestBook'
 include ':app'
+rootProject.name='GuestBook'

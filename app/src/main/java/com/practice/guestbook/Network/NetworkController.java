@@ -7,12 +7,9 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.widget.Toast;
 
-import androidx.fragment.app.FragmentTransaction;
-
 import com.practice.guestbook.IdentificationActivity;
 import com.practice.guestbook.MainActivity;
 import com.practice.guestbook.PathUtils;
-import com.practice.guestbook.User;
 
 import java.io.File;
 
@@ -53,27 +50,32 @@ public class NetworkController {
         RequestBody nameRequest = RequestBody.create(MediaType.parse("text/plain"), name);
         RequestBody emailRequest = RequestBody.create(MediaType.parse("text/plain"), email);
         RequestBody passwordRequest = RequestBody.create(MediaType.parse("text/plain"), password);
+        RequestBody passwordConfirmationRequest = RequestBody.create(MediaType.parse("text/plain"), password);
 
         MultipartBody.Part multipartBody = MultipartBody.Part.createFormData("avatar", file.getName(), RequestBody.create(MediaType.parse("image/*"), file));
 
         ServerApi serverApi = ClientApi.getApi();
-        Call<User> call = serverApi.register(nameRequest, emailRequest, passwordRequest, multipartBody);
-        call.enqueue(new Callback<User>() {
+        Call<UserResponse> call = serverApi.register(nameRequest, emailRequest, passwordRequest, passwordConfirmationRequest, multipartBody);
+        call.enqueue(new Callback<UserResponse>() {
             @Override
-            public void onResponse(Call<User> call, Response<User> response) {
-                user = response.body();
+            public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {
 
-                if (user != null) {
+                if (response.body() != null) {
+
+                    user.setUser(response.body().getUser());
+                    user.setToken(response.body().getToken());
 
                     SharedPreferences.Editor editor = IdentificationActivity.sp.edit();
-                    editor.putInt("id", user.getId());
-                    editor.putString("name", user.getName());
-                    editor.putString("email", user.getEmail());
-                    editor.putString("avatar", BASE_URL + user.getAvatar());
-                    editor.putInt("is_admin", 0);
-                    editor.putString("api_token", user.getApi_token());
-                    editor.putString("created_at", user.getCreated_at());
-                    editor.putString("updated_at", user.getUpdated_at());
+                    editor.putInt("id", user.getUser().getId());
+                    editor.putString("name", user.getUser().getName());
+                    editor.putString("email", user.getUser().getEmail());
+                    editor.putString("avatar", BASE_URL + user.getUser().getAvatar());
+                    editor.putInt("is_admin", user.getUser().getIs_admin());
+                    editor.putString("created_at", user.getUser().getCreated_at());
+                    editor.putString("updated_at", user.getUser().getUpdated_at());
+
+                    editor.putString("token", user.getToken().getToken());
+                    editor.putString("expires_at", user.getToken().getExpires_at());
                     editor.apply();
 
                     Intent intent = new Intent(context, MainActivity.class);
@@ -89,7 +91,7 @@ public class NetworkController {
             }
 
             @Override
-            public void onFailure(Call<User> call, Throwable t) {
+            public void onFailure(Call<UserResponse> call, Throwable t) {
                 pDialog.dismiss();
             }
         });
@@ -101,23 +103,28 @@ public class NetworkController {
         pDialog.show();
 
         ServerApi serverApi = ClientApi.getApi();
-        Call<User> call = serverApi.login(email, password);
-        call.enqueue(new Callback<User>() {
+        Call<UserResponse> call = serverApi.login(email, password);
+        call.enqueue(new Callback<UserResponse>() {
             @Override
-            public void onResponse(Call<User> call, Response<User> response) {
-                user = response.body();
+            public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {
 
-                if (user != null) {
+
+                if (response.body() != null) {
+
+                    user.setUser(response.body().getUser());
+                    user.setToken(response.body().getToken());
 
                     SharedPreferences.Editor editor = IdentificationActivity.sp.edit();
-                    editor.putInt("id", user.getId());
-                    editor.putString("name", user.getName());
-                    editor.putString("email", user.getEmail());
-                    editor.putString("avatar", BASE_URL + user.getAvatar());
-                    editor.putInt("is_admin", user.getIs_admin());
-                    editor.putString("api_token", user.getApi_token());
-                    editor.putString("created_at", user.getCreated_at());
-                    editor.putString("updated_at", user.getUpdated_at());
+                    editor.putInt("id", user.getUser().getId());
+                    editor.putString("name", user.getUser().getName());
+                    editor.putString("email", user.getUser().getEmail());
+                    editor.putString("avatar", BASE_URL + user.getUser().getAvatar());
+                    editor.putInt("is_admin", user.getUser().getIs_admin());
+                    editor.putString("created_at", user.getUser().getCreated_at());
+                    editor.putString("updated_at", user.getUser().getUpdated_at());
+
+                    editor.putString("token", user.getToken().getToken());
+                    editor.putString("expires_at", user.getToken().getExpires_at());
                     editor.apply();
 
                     Intent intent = new Intent(context, MainActivity.class);
@@ -133,8 +140,8 @@ public class NetworkController {
             }
 
             @Override
-            public void onFailure(Call<User> call, Throwable t) {
-
+            public void onFailure(Call<UserResponse> call, Throwable t) {
+                t.printStackTrace();
             }
         });
     }
@@ -145,7 +152,7 @@ public class NetworkController {
         pDialog.show();
 
         ServerApi serverApi = ClientApi.getApi();
-        serverApi.addNewComment(title, message, user.getApi_token()).enqueue(new Callback<Void>() {
+        serverApi.addNewComment(title, message, "Bearer " + IdentificationActivity.user.getToken().getToken()).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 pDialog.dismiss();
@@ -169,7 +176,7 @@ public class NetworkController {
         pDialog.show();
 
         ServerApi serverApi = ClientApi.getApi();
-        serverApi.deleteComment(comment_id, user.getApi_token()).enqueue(new Callback<Void>() {
+        serverApi.deleteComment(comment_id, "Bearer " + IdentificationActivity.user.getToken().getToken()).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 pDialog.dismiss();

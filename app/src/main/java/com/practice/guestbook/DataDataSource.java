@@ -17,7 +17,7 @@ public class DataDataSource extends PageKeyedDataSource<Integer, Data> {
     @Override
     public void loadInitial(@NonNull LoadInitialParams<Integer> params, @NonNull final LoadInitialCallback<Integer, Data> callback) {
         ClientApi.getApi()
-                .getListOfComments(IdentificationActivity.user.getApi_token(), FIRST_PAGE)
+                .getListOfComments("Bearer " + IdentificationActivity.user.getToken().token, FIRST_PAGE)
                 .enqueue(new Callback<CommentApiResponse>() {
                     @Override
                     public void onResponse(Call<CommentApiResponse> call, Response<CommentApiResponse> response) {
@@ -37,7 +37,7 @@ public class DataDataSource extends PageKeyedDataSource<Integer, Data> {
     public void loadBefore(@NonNull final LoadParams<Integer> params, @NonNull final LoadCallback<Integer, Data> callback) {
 
         ClientApi.getApi()
-                .getListOfComments(IdentificationActivity.user.getApi_token(), params.key)
+                .getListOfComments("Bearer " + IdentificationActivity.user.getToken().token, params.key)
                 .enqueue(new Callback<CommentApiResponse>() {
                     @Override
                     public void onResponse(Call<CommentApiResponse> call, Response<CommentApiResponse> response) {
@@ -60,13 +60,13 @@ public class DataDataSource extends PageKeyedDataSource<Integer, Data> {
     public void loadAfter(@NonNull final LoadParams<Integer> params, @NonNull final LoadCallback<Integer, Data> callback) {
 
         ClientApi.getApi()
-                .getListOfComments(IdentificationActivity.user.getApi_token(), params.key)
+                .getListOfComments("Bearer " + IdentificationActivity.user.getToken().token, params.key)
                 .enqueue(new Callback<CommentApiResponse>() {
                     @Override
                     public void onResponse(Call<CommentApiResponse> call, Response<CommentApiResponse> response) {
 
                         if (response.body() != null) {
-                            Integer key = (response.body().current_page < response.body().last_page) ? params.key + 1 : params.key;
+                            Integer key = (response.body().meta.current_page < response.body().meta.last_page) ? params.key + 1 : params.key;
                             callback.onResult(response.body().data, key);
                         }
                     }

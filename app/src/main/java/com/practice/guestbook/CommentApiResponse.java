@@ -1,26 +1,36 @@
 package com.practice.guestbook;
 
-import androidx.annotation.Nullable;
-
 import java.util.List;
 
 public class CommentApiResponse {
-    int current_page;
     List<Data> data;
-    int from;
-    int last_page;
-    String next_page_url;
-    String path;
-    int per_page;
-    String prev_page_url;
-    int to;
-    long total;
+    Links links;
+    Meta meta;
 }
 
 class Data {
-    long comment_id;
-    User user;;
+    long id;
+    long user_id;
+    User user;
     String title;
     String message;
     String created_at;
+    String updated_at;
+}
+
+class Links {
+    String first;
+    String last;
+    String prev;
+    String next;
+}
+
+class Meta {
+    int current_page;
+    int from;
+    int last_page;
+    String path;
+    int per_page;
+    int to;
+    long total;
 }

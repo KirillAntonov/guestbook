@@ -49,7 +49,7 @@ public class CommentAdapter extends PagedListAdapter<Data, CommentAdapter.DataVi
             holder.messageTextView.setText(data.message);
             holder.userNameTextView.setText(data.user.getName());
 
-            if (data.user.getId() != IdentificationActivity.user.getId()) {
+            if (data.user.getId() != IdentificationActivity.user.getUser().getId()) {
                 holder.deleteComment.setVisibility(View.INVISIBLE);
             } else {
                 holder.deleteComment.setVisibility(View.VISIBLE);
@@ -58,7 +58,7 @@ public class CommentAdapter extends PagedListAdapter<Data, CommentAdapter.DataVi
             holder.deleteComment.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    IdentificationActivity.networkController.deleteComment(context, data.comment_id);
+                    IdentificationActivity.networkController.deleteComment(context, data.id);
                 }
             });
 
@@ -71,7 +71,7 @@ public class CommentAdapter extends PagedListAdapter<Data, CommentAdapter.DataVi
             new DiffUtil.ItemCallback<Data>() {
                 @Override
                 public boolean areItemsTheSame(@NonNull Data oldItem, @NonNull Data newItem) {
-                    return oldItem.comment_id == newItem.comment_id;
+                    return oldItem.id == newItem.id;
                 }
 
                 @SuppressLint("DiffUtilEquals")

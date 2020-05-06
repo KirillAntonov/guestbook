@@ -49,10 +49,10 @@ public class MainActivity extends AppCompatActivity {
 
         CustomPusherOptions options = new CustomPusherOptions(true);
 
-        String token = "Bearer " + IdentificationActivity.user.getApi_token();
+        String token = "Bearer " + IdentificationActivity.user.getToken().getToken();
         HashMap<String, String> map = new HashMap<>();
         map.put("Authorization", token);
-        HttpAuthorizer httpAuthorizer = new HttpAuthorizer(BASE_URL + "broadcasting/auth");
+        HttpAuthorizer httpAuthorizer = new HttpAuthorizer("https://guest-book.naveksoft.com/" + "broadcasting/auth");
         httpAuthorizer.setHeaders(map);
         options.setAuthorizer(httpAuthorizer);
 

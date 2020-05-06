@@ -4,8 +4,6 @@ import androidx.annotation.Nullable;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.sql.Date;
-
 public class User {
 
     @SerializedName("id")
@@ -19,8 +17,6 @@ public class User {
     @Nullable
     @SerializedName("is_admin")
     private int is_admin = 0;
-    @SerializedName("api_token")
-    private String api_token;
     @SerializedName("created_at")
     private String created_at;
     @SerializedName("updated_at")
@@ -30,13 +26,12 @@ public class User {
 
     }
 
-    public User(int id, String name, String email, String avatar, int is_admin, String api_token, String created_at, String updated_at) {
+    public User(int id, String name, String email, String avatar, int is_admin, String created_at, String updated_at) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.avatar = avatar;
         this.is_admin = is_admin;
-        this.api_token = api_token;
         this.created_at = created_at;
         this.updated_at = updated_at;
     }
@@ -79,14 +74,6 @@ public class User {
 
     public int getIs_admin() {
         return is_admin;
-    }
-
-    public void setApi_token(String api_token) {
-        this.api_token = api_token;
-    }
-
-    public String getApi_token() {
-        return api_token;
     }
 
     public void setCreated_at(String created_at) {

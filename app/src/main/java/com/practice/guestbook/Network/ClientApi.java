@@ -4,7 +4,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ClientApi {
-    public static final String BASE_URL = "http://pusher.cpl.by/";
+    public static final String BASE_URL = "https://guest-book.naveksoft.com/";
     private static Retrofit retrofit;
     private static ServerApi serverApi;
 

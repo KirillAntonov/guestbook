@@ -22,6 +22,7 @@ import com.pusher.client.Pusher;
 import com.pusher.client.PusherOptions;
 import com.pusher.client.channel.Channel;
 import com.pusher.client.channel.ChannelEventListener;
+import com.pusher.client.channel.PrivateChannelEventListener;
 import com.pusher.client.channel.PusherEvent;
 import com.pusher.client.connection.ConnectionEventListener;
 import com.pusher.client.connection.ConnectionStateChange;
@@ -32,6 +33,9 @@ import java.util.HashMap;
 import static com.practice.guestbook.Network.ClientApi.BASE_URL;
 
 public class MainActivity extends AppCompatActivity {
+
+    String TOKEN_PUSH = "App\\Events\\TokenPush";
+    String USER_PUSH = "App\\Events\\UserPush";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
 //        options.buildUrl("key");
 
         CustomPusherOptions options = new CustomPusherOptions(true);
+        options.prefix = "ws";
 
         String token = "Bearer " + IdentificationActivity.user.getToken().getToken();
         HashMap<String, String> map = new HashMap<>();
@@ -70,18 +75,53 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        Channel channel = pusher.subscribe("guestbook", new ChannelEventListener() {
+        pusher.subscribePrivate("private-token." + IdentificationActivity.user.getToken().token, new PrivateChannelEventListener() {
             @Override
-            public void onEvent(PusherEvent event) {
-                System.out.println("Received event with data: " + event.toString());
+            public void onAuthenticationFailure(String message, Exception e) {
+
             }
 
             @Override
             public void onSubscriptionSucceeded(String channelName) {
-                System.out.println("Subscribed to channel: " + channelName);
+
             }
 
-        });
+            @Override
+            public void onEvent(PusherEvent event) {
+
+            }
+        }, TOKEN_PUSH);
+
+        pusher.subscribePrivate("private-token." + IdentificationActivity.user.getUser().getId(), new PrivateChannelEventListener() {
+            @Override
+            public void onAuthenticationFailure(String message, Exception e) {
+
+            }
+
+            @Override
+            public void onSubscriptionSucceeded(String channelName) {
+
+            }
+
+            @Override
+            public void onEvent(PusherEvent event) {
+
+            }
+        }, USER_PUSH);
+
+
+//        Channel channel = pusher.subscribe("guestbook", new ChannelEventListener() {
+//            @Override
+//            public void onEvent(PusherEvent event) {
+//                System.out.println("Received event with data: " + event.toString());
+//            }
+//
+//            @Override
+//            public void onSubscriptionSucceeded(String channelName) {
+//                System.out.println("Subscribed to channel: " + channelName);
+//            }
+//
+//        });
 
     }
 

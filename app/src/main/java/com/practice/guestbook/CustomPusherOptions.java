@@ -6,7 +6,7 @@ public class CustomPusherOptions extends PusherOptions {
 
     String SOCKET_URL = "guest-book.naveksoft.com";
     String prefix = "";
-    String URI_SUFFIX = "?client=java-client&protocol=5&version=$LIB_VERSION";
+    String URI_SUFFIX = "?client=java-client&protocol=5&version=" + LIB_VERSION;
 
     boolean hasEncrypted;
 
